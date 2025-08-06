@@ -1,5 +1,26 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { glob } from 'glob'
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'fs'
+import { join } from 'path'
+
+function findMjsFiles(dir) {
+  const files = []
+
+  function traverse(currentDir) {
+    const items = readdirSync(currentDir, { withFileTypes: true })
+
+    for (const item of items) {
+      const fullPath = join(currentDir, item.name)
+
+      if (item.isDirectory()) {
+        traverse(fullPath)
+      } else if (item.name.endsWith('.mjs')) {
+        files.push(fullPath)
+      }
+    }
+  }
+
+  traverse(dir)
+  return files
+}
 
 async function fixContentlayerAssertions() {
   try {
@@ -10,7 +31,7 @@ async function fixContentlayerAssertions() {
     }
 
     // .contentlayer 폴더의 모든 .mjs 파일 찾기
-    const files = await glob('.contentlayer/**/*.mjs')
+    const files = findMjsFiles('.contentlayer')
 
     for (const file of files) {
       const content = readFileSync(file, 'utf8')
