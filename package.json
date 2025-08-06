@@ -1,5 +1,5 @@
 {
-  "name": "Min71-Tech-Blog",
+  "name": "Lapidix-Dev-Blog",
   "version": "2.0.2",
   "private": true,
   "scripts": {
@@ -84,8 +84,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@3.6.1",
-  "engines": {
-    "node": ">=18.0.0 <20.0.0"
-  }
+  "packageManager": "yarn@3.6.1"
 }
