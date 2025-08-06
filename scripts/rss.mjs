@@ -4,8 +4,15 @@ import path from 'path'
 import { sortPosts } from 'pliny/utils/contentlayer.js'
 import { escape } from 'pliny/utils/htmlEscaper.js'
 import { allBlogs } from '../.contentlayer/generated/index.mjs'
-import tagData from '../app/tag-data.json' assert { type: 'json' }
+// JSON import를 동적으로 처리
+import { readFileSync } from 'fs'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 import siteMetadata from '../data/siteMetadata.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const tagData = JSON.parse(readFileSync(join(__dirname, '../app/tag-data.json'), 'utf8'))
 
 const generateRssItem = (config, post) => `
   <item>
