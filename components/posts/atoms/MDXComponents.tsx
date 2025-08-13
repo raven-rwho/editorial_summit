@@ -2,8 +2,10 @@ import type { MDXComponents } from 'mdx/types'
 import BlogNewsletterForm from 'pliny/ui/BlogNewsletterForm'
 import Pre from 'pliny/ui/Pre'
 import TOCInline from 'pliny/ui/TOCInline'
+
 import Image from '../../common/atoms/Image'
 import CustomLink from '../../common/atoms/Link'
+import { ErrorCallout, InfoCallout, NoteCallout, TipCallout, WarningCallout } from './Callout'
 
 export const components: MDXComponents = {
   Image,
@@ -11,4 +13,9 @@ export const components: MDXComponents = {
   a: CustomLink,
   pre: Pre,
   BlogNewsletterForm,
+  Tip: TipCallout,
+  Note: NoteCallout,
+  Warning: WarningCallout,
+  Error: ErrorCallout,
+  Info: InfoCallout,
 }
