@@ -15,7 +15,7 @@ interface MainPostCardProps {
 const MainPostCard = ({ post, author }: MainPostCardProps) => {
   const { slug, date, title, summary, tags, images } = post
   return (
-    <div className="container rounded-xl shadow-md bg-slate-200 dark:bg-slate-700 flex flex-col justify-center items-center p-4">
+    <div className="container rounded-xl h-full shadow-md bg-slate-200 dark:bg-slate-700 flex flex-col justify-center items-center p-4">
       <PostThumbnailWrapper
         title={title}
         slug={slug}
@@ -38,7 +38,7 @@ const MainPostCard = ({ post, author }: MainPostCardProps) => {
           <PostSummaryTextElement summary={summary ?? ''} />
         </div>
 
-        <div className="mt-8 flex flex-wrap">
+        <div className="mt-8 flex flex-wrap-reverse">
           {tags.map((tag) => (
             <Tag className="mr-1 my-1" key={tag} text={tag} />
           ))}
