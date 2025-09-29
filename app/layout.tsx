@@ -2,12 +2,12 @@ import 'css/tailwind.css'
 
 import { Space_Grotesk } from 'next/font/google'
 // import { Analytics, AnalyticsConfig } from 'pliny/analytics'
-import GoogleAnalytics from '@/components/common/atoms/GoogleAnalytics'
+// import GoogleAnalytics from '@/components/common/atoms/GoogleAnalytics'
 import SectionContainer from '@/components/common/atoms/SectionContainer'
 import Footer from '@/components/common/molecules/Footer'
 import Header from '@/components/header/organisms/Header'
 import siteMetadata from '@/data/siteMetadata'
-import { Analytics } from '@vercel/analytics/react'
+// import { Analytics } from '@vercel/analytics/react'
 import { Metadata } from 'next'
 import { SearchConfig, SearchProvider } from 'pliny/search'
 import { ThemeProviders } from './theme-providers'
@@ -167,8 +167,8 @@ export default function RootLayout({
 
       <body className="bg-white text-black antialiased dark:bg-gray-800 dark:text-white">
         <ThemeProviders>
-          <Analytics />
-          <GoogleAnalytics />
+          {/* <Analytics /> */}
+          {/* <GoogleAnalytics /> */}
           <SectionContainer>
             <div className="flex h-screen flex-col justify-between font-sans">
               <SearchProvider searchConfig={siteMetadata.search as SearchConfig}>

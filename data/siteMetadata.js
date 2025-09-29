@@ -1,23 +1,23 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Lapidix Dev',
-  author: 'Lee MinGi',
-  headerTitle: 'Lapidix Dev',
+  title: 'Ringier - Editorial Summit 2025',
+  author: 'GMU',
+  headerTitle: 'Editorial Summit 2025',
   description:
-    'Technical blog by Lee MinGi covering Cosmos blockchain development, modern web technologies, and software engineering best practices.',
-  language: 'ko',
-  locale: 'ko-KR',
+    'Covering all insights from the editorial summit 2025 hosted by Ringier',
+  language: 'en',
+  locale: 'en-US',
   theme: 'system', // system, dark or light
   siteUrl: 'https://lapidix.dev',
-  siteRepo: 'https://github.com/lapidix/blog',
+  // iteRepo: '',
   siteLogo: '/static/images/logo.png',
   socialBanner: '/static/images/banner.jpeg',
   // mastodon: 'https://mastodon.social/@mastodonuser',
-  email: 'mingi3442@gmail.com',
-  linkedin: 'https://www.linkedin.com/in/lapidix',
-  github: 'https://github.com/lapidix',
-  twitter: 'https://twitter.com/lapidix_dev',
-  facebook: 'https://facebook.com',
+  email: 'peter.krauss@ringier.ch',
+  // linkedin: '',
+  // github: '',
+  // twitter: '',
+  // facebook: '',
   // youtube: 'https://youtube.com',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
