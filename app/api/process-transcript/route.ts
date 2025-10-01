@@ -5,12 +5,24 @@ import { commitMarkdownToRepo } from '@/lib/git-operations'
 interface RequestBody {
   transcript: string
   title?: string
+  password?: string
 }
 
 export async function POST(request: NextRequest) {
   try {
     // Parse the request body
     const body: RequestBody = await request.json()
+
+    // Check password protection
+    const expectedPassword = process.env.TRANSCRIPT_API_PASSWORD
+    if (!expectedPassword) {
+      return NextResponse.json({ error: 'API password not configured' }, { status: 500 })
+    }
+
+    const providedPassword = body.password || request.headers.get('x-api-password')
+    if (!providedPassword || providedPassword !== expectedPassword) {
+      return NextResponse.json({ error: 'Invalid or missing password' }, { status: 401 })
+    }
 
     if (!body.transcript) {
       return NextResponse.json({ error: 'Transcript is required' }, { status: 400 })
