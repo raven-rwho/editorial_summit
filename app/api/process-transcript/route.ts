@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { transformTranscriptToMarkdown } from '@/lib/anthropic-client'
+import {
+  transformTranscriptToMarkdown,
+  generateShortSummary,
+  generateTitle,
+} from '@/lib/anthropic-client'
 import { commitMarkdownToRepo } from '@/lib/git-operations'
+import { extractTitleFromMarkdown, generateSlug } from '@/lib/markdown-generator'
 
 interface RequestBody {
   transcript: string
@@ -33,21 +38,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Anthropic API key not configured' }, { status: 500 })
     }
 
-    // Transform the transcript using Anthropic
-    console.log('Transforming transcript with Anthropic...')
-    const markdown = await transformTranscriptToMarkdown(body.transcript)
-
-    // Extract title from the generated markdown if not provided
+    // Generate title if not provided
+    console.log('Generating title...')
     let title = body.title
     if (!title) {
-      // Try to extract title from the first H1 header in the markdown
-      const titleMatch = markdown.match(/^#\s+(.+)$/m)
-      title = titleMatch ? titleMatch[1] : `Meeting Summary - ${new Date().toLocaleDateString()}`
+      title = await generateTitle(body.transcript)
     }
+
+    // Generate slug early for image fetching
+    const slug = generateSlug(title)
+
+    // Transform the transcript using Anthropic
+    console.log('Transforming transcript with Anthropic...')
+    const { markdown, imageData } = await transformTranscriptToMarkdown(body.transcript, {
+      includeImage: true,
+      slug: slug,
+    })
+
+    // Generate short summary for frontmatter
+    console.log('Generating summary...')
+    const summary = await generateShortSummary(body.transcript)
 
     // Commit the markdown to the repository
     console.log('Committing to repository...')
-    const commitResult = await commitMarkdownToRepo(markdown, title)
+    const commitResult = await commitMarkdownToRepo(markdown, title, summary, imageData || undefined)
 
     if (!commitResult.success) {
       return NextResponse.json(
@@ -68,6 +82,13 @@ export async function POST(request: NextRequest) {
         filePath: commitResult.filePath,
         commitHash: commitResult.commitHash,
         previewContent: markdown.substring(0, 500) + '...',
+        image: imageData
+          ? {
+              url: imageData.localPath || imageData.url,
+              alt: imageData.alt,
+              credit: imageData.credit,
+            }
+          : null,
       },
     })
   } catch (error) {

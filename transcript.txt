@@ -10,18 +10,99 @@ Details
 Niches in Journalism Dmitry Shishkin initiated a discussion on journalism niches, emphasizing their role in enabling original journalism and the need for clarity on what is and isn't being covered. Peter Krauss added that a deeper understanding of existing content and desired content is crucial for niche development, citing the success of a "fame fighting" event that led to significant subscription sales. They highlighted the importance of data in identifying what people read and do not read, and discussed the lack of a fundamental approach to data as a blind spot for future success.
 Identifying and Approaching Niches with Data Peter Krauss explained that from a technical data perspective, identifying a niche like travel involves comparing performance with competitors and using algorithmic recommendations to suggest content to editorial teams. Dmitry Shishkin inquired about approaching niche identification from an editorial perspective, suggesting that data should inform what kind of research and conversations are needed to identify a niche, especially when editorial teams express interest in specific areas (00:02:29). Peter Krauss added that even if internal data is lacking, insights can be gained by learning from others who have successfully established niches (00:04:32).
 Structuring Data Departments for Niche Development Dmitry Shishkin questioned the optimal setup for a data department within an organization to support niche development, moving beyond traditional monthly or annual reporting to more daily and weekly insights (00:04:32). Peter Krauss advocated for cross-functional teams, highlighting that central data teams often lack the contextual knowledge to evaluate data accuracy (e.g., whether an article should have received more clicks or subscriptions). They emphasized the need for close input from individuals with contextual knowledge and the development of daily-use products for these teams, citing the success of having a "champion" like Meny Zaka, the deputy editor and chief from Bild, who was interested in understanding and utilizing data solutions (00:06:03).
-Collaboration and Conflicting Data Sources Dmitry Shishkin raised concerns about potential conflicting messages from different data-centric departments such as editorial analytics, audience engagement, product managers, and the central data department (00:07:20). Peter Krauss explained that Axel Springer addressed this by establishing a common platform for all teams to view each other's products and by forming cross-functional teams. Peter Krauss noted that building products for the editorial department, such as recommendation tools that help identify relevant content, generated significant value and traction (00:08:22).
-Data Normalization and Common Media Ontology Peter Krauss emphasized the necessity of a single data foundation, or "common media ontology," across different brands and countries for scaling solutions. Dmitry Shishkin further explored normalizing this ontology across various third-party data streams interacting with the same content, to unleash potential by connecting disparate data points (00:13:51). Peter Krauss explained that this involves defining clear data contracts for datasets, akin to microservice architecture, and automating data ingestion and distillation into the ontology layer via code to ensure a single source of truth (00:15:08).
-Challenges in Data Definition and KPI Alignment Peter Krauss noted that page view definitions vary across brands, even with shared analytics tools, making normalization crucial. Dmitry Shishkin pressed on this point, questioning why definitions differ if editorial analytics systems are the same, leading Peter Krauss to clarify that different systems are used by different brands (e.g., Google Analytics vs. Marfield) (00:17:18). Dmitry Shishkin and Peter Krauss agreed that expecting an entire organization to align on a single KPI like page views is unrealistic, especially given the inherent conflicting goals in news media (e.g., reach vs. subscriptions) (00:11:51).
-Use Cases for Data and Niche Content Discovery Peter Krauss outlined use cases for data, including having a layer of intelligence for content exchange, recreation, or translation. They discussed identifying content relevant to different genders and user needs, emphasizing the importance of brand safety over clickbait (00:20:14). Peter Krauss also highlighted the relevance of hyper-regional content and using data to automate experiences like newsletters and notifications based on user interest (00:21:15).
-The Future of Newsrooms and Automated Content Discovery Peter Krauss described a future newsroom model, exemplified by "Morning Crunch," where AI automates content aggregation from various sources like Reddit, providing editors with curated recommendations for original content (00:22:32). They highlighted the "trend score" KPI that normalizes promotion bias, which is crucial for personalization (00:24:50). Peter Krauss explained that this model significantly reduces the effort in content discovery, creation, and distribution, allowing small teams to produce engaging and profitable niche newsletters (00:25:58).
-Content Format Identification and Multimodality Peter Krauss agreed with Dmitry Shishkin's suggestion to automate content format identification within the CMS to provide more prescriptive recommendations to newsrooms. Peter Krauss further proposed thinking about multimodality, where text can be transcreated into videos or other formats based on the distribution channel (00:27:00). They discussed how multimodality could also apply to delivering content based on user needs, such as an "update me" or "educate me" piece (00:28:06).
-Embeddings and Internet-Wide Content Similarity Peter Krauss explained that "embeddings" (mathematical representations of content) have revolutionized content similarity calculation, enabling automated identification of similar articles (00:28:06). Peter Krauss noted that this technology allows for analyzing all internet content to find similarities to what a news organization is looking for, making niche content discovery much easier (00:29:08). They stated that this capability, combined with promotion bias-normalized KPIs, is the "secret sauce" for future content strategies (00:30:15).
-Solving Personalization Challenges with External Data Addressing the challenge of insufficient content volume for effective personalization in media, Peter Krauss suggested scraping external content (without copying) to understand what performs well for specific brands (00:30:15). Peter Krauss emphasized that this approach, combined with a data foundation across different brands, allows news organizations to leverage knowledge about well-performing content at scale. Dmitry Shishkin summarized key enablers discussed, including vectorization, transcreation, promotion bias normalization, multi-skilled teams, and automated recommendations (00:31:21).
-Protoise and Future Newsroom Vision Peter Krauss viewed Protoise, Ringio's content-sharing tool, as the foundation for the future, requiring content to be enriched with intelligence, including data from external sources (00:32:31). Peter Krauss reiterated the need to combine internal and external content data, including embeddings, to identify similarities and distill sorting mechanisms for recommendations (00:33:47). Peter Krauss concluded by stating that the future of newsrooms involves automating discovery for niche editors, with roughly 20% of content being original and 80% being automated from other sources (00:34:34).
-
-Suggested next steps
-No suggested next steps were found for this meeting.
-
-You should review Gemini's notes to make sure they're accurate. Get tips and learn how Gemini takes notes
-Please provide feedback about using Gemini to take notes in a short survey.
+{"transcript":"Oct 7, 2025\nPillar 3: AI-enabled Interview - Peter K.\nInvited Dmitry Shishkin Peter Krauss\nAttachments 
+  Pillar 3: AI-enabled Interview - Peter K.\nMeeting records Transcript\n\nSummary\nPeter Krauss identified two transformative 
+  applications of AI in the newsroom: automating news discovery to provide editors with relevant articles and automating content 
+  curation and personalization to offer a \"Netflix experience\" in content consumption, which Dmitry Shishkin linked to user 
+  needs. They discussed the challenges of AI-driven content quality, the importance of journalistic brands focusing on education 
+  and trust amidst AI-generated content, and key data dependencies like hyper-personalization and understanding user engagement for
+   successful AI implementation. Peter Krauss and Dmitry Shishkin also explored the feasibility of AI-generated news products, the 
+  role of multimodality, strategies for journalistic efficiency, and innovative business models, emphasizing the need for 
+  consistent data foundations across brands and the potential for content reutilization to support investigative 
+  journalism.\n\nDetails\nNotes Length: Long\nTransformative AI Applications in the Newsroom: Peter Krauss identified two 
+  transformative applications of AI in the newsroom. The first is the automation of news discovery, where AI can read the internet,
+   sort content by relevance, and provide editors with a shortlist of 10 to 20 articles daily, indicating topics they should write 
+  about. This approach drastically changed the way editors worked at AXA and Springer (00:00:00). The second is the automation of 
+  content curation and personalization, addressing the issue of editors spending significant time deciding where to place articles.
+   Peter Krauss noted that current digital newspapers still resemble printed versions, unlike platforms like Instagram or YouTube 
+  where users see content tailored to their interests. Peter Krauss emphasized the need for a \"Netflix experience\" in content 
+  consumption, combining curated content with a high degree of understanding of user preferences, which Dmitry Shishkin related to 
+  user needs (00:01:36).\nChallenges and Quality in AI-driven Content: Dmitry Shishkin questioned the effectiveness of social media
+   algorithms, noting that they often push content users are not interested in (00:01:36). Peter Krauss clarified that journalistic
+   brands should not be compared to social media platforms, as social media often prioritizes engagement, which can lead to 
+  clickbait or harassment. Peter Krauss stressed that journalistic brands have a responsibility to educate people and report on 
+  world events while also needing to be profitable. Peter Krauss mentioned the \"need to know\" and \"want to know\" model from an 
+  update, where essential information is presented prominently, followed by personalized content (00:02:39). Peter Krauss also 
+  highlighted that multimodality, such as videos, needs to be considered, as younger generations are reading less (00:04:54).\nKey 
+  Dependencies for AI Success from a Data Perspective: Peter Krauss, from a data perspective, identified several key dependencies 
+  for successful AI implementation in newsrooms, including radical efficiency, hyper-personalization, and building new AI-driven 
+  products. Peter Krauss stressed the necessity of understanding product mechanics, successful features driving user engagement, 
+  and the specific content users seek for a given brand (00:04:54). Peter Krauss noted that while organizations are adept at 
+  tracking user information, they are \"drowning in the flood of data\" and fail to grasp the bigger picture. Peter Krauss 
+  emphasized the need to understand how revenue is generated and how traffic might be cannibalized within a page. Peter Krauss also
+   underscored the importance of identifying engaging features that users are willing to pay for, such as subscriptions or logins, 
+  and urged for a holistic view of the user funnel rather than fragmented departmental goals like subscription or advertisement 
+  revenue (00:06:03).\nChallenges of User Understanding in News Media vs. Other Industries: Peter Krauss explained that 
+  understanding users in news media is significantly harder compared to platforms like Netflix or Amazon, primarily because news 
+  organizations often start from a \"cold start\" without knowing their users since they typically do not log in. Additionally, 
+  content changes frequently, with a news article having a lifespan of around six hours, requiring a constant fresh start. This 
+  rapid change is also reflected in how news organizations operate, with editors often not focusing on past performance but rather 
+  on current events (00:08:24). Dmitry Shishkin added that more advanced editors understand the value of historical performance 
+  data for effective daily commissioning (00:09:12).\nFeasibility of AI-Generated News Products and Trust: Peter Krauss stated that
+   it is technically possible to build a news product without a newsroom or human journalists, although the current quality is 
+  \"lousy.\" However, Peter Krauss predicted that within a year, the quality could be comparable to social media, attracting an 
+  audience. Peter Krauss questioned whether this is the desired outcome, reiterating the journalistic brands role in educating 
+  people and sharing opinions. Dmitry Shishkin then proposed that the key differentiator between human and AI newsrooms would be 
+  trust (00:10:32). Peter Krauss concurred, predicting that the internet would be flooded with AI-generated content, making it 
+  increasingly difficult to distinguish reality from fiction, thereby increasing the importance of trusted brands 
+  (00:11:47).\nMultimodality and Content Generation: Peter Krauss emphasized the increasing ease of generating videos from data, 
+  highlighting examples of existing news platforms that prioritize engagement over quality using automated video generation 
+  (00:11:47). Dmitry Shishkin shared an anecdote about a German tabloid that desired a \"make me angry\" user need, showcasing the 
+  diverse motivations behind content consumption (00:12:55). Peter Krauss noted that various brands use similar user needs models, 
+  such as the BBCs \"know, understand, feel, and do\" framework, with customized wording (00:13:50).\nJournalistic Efficiency and 
+  Newsroom Size Reduction: Dmitry Shishkin inquired about reducing newsroom operations by 30% while preserving quality and output. 
+  Peter Krauss explained that while content creation is well-covered by current tools, the focus for efficiency should be on 
+  automating \"monkey work\" processes such as sales acquisition and sending invoices, which are time-consuming and annoying 
+  (00:15:12). Peter Krauss suggested starting a newsroom afresh, prioritizing the technical department, as seen at AXA, where the 
+  newsroom was secondary to technical fulfillment. Peter Krauss proposed building a prototype system where editors receive 
+  recommendations of the 10 most important things to focus on daily, allowing them to refine and distribute content 
+  (00:16:40).\nInnovative Business Models and Content Strategy: Peter Krauss highlighted \"morning crunch\" as an interesting 
+  business model where newsletters are generated based on a technical product that dictates what to write about. This model is 
+  highly profitable due to targeted ads and high CPMs, with a small team serving a large user base (00:17:35). Dmitry Shishkin 
+  proposed a strategy of compartmentalizing news into niches, with central technical and distribution provisions, allowing focus on
+   original content while commodity news is automated (00:18:45). Peter Krauss also mentioned the value of recommendation systems 
+  providing feedback to editors, such as identifying under-reported topics that users are interested in. Dmitry Shishkin elaborated
+   on this, referring to editorial analytics tools that provide notifications and measure editor responsiveness to these insights 
+  (00:19:50).\nEconomic and Idealistic Approaches to Journalistic Efficiency: Peter Krauss presented two ways to approach 
+  journalistic efficiency derived from AI. The first is economic, leading to fewer people involved in content creation while 
+  maintaining quality and output, resulting in cost reduction. The second, more idealistic approach, is to free up journalists to 
+  spend more time on investigative journalism, which is difficult for AI agents to replicate and is often the source of major 
+  stories that define a brands reputation (00:22:22). Peter Krauss gave an example of how traditional sports reporting by German 
+  brands, involving stadium presence and direct interaction, cannot be automated without sacrificing quality. Dmitry Shishkin 
+  observed that this presents a challenge for organizations traditionally reliant on scale, suggesting that only high-quality, 
+  mission-driven organizations will thrive, while an \"avalanche\" of commodity content will cater to audiences seeking amusement 
+  or outrage (00:23:47).\nImpact of LLMs and Future of News Media: Peter Krauss compared the advent of Large Language Models (LLMs)
+   to the invention of the printing press, noting that they make content creation cheaper. Peter Krauss emphasized that this must 
+  be reflected in how news media earns money, either through more content or higher prices for content, necessitating a change in 
+  the entire operational model (00:26:22). Peter Krauss also reiterated the importance of automated content discovery and 
+  prediction of content performance (00:27:39). Dmitry Shishkin sought advice for multi-country portfolio companies on data 
+  consistency. Peter Krauss stressed that a consistent data foundation is crucial for building any data product, as inconsistencies
+   in data naming or understanding can negate efforts. Peter Krauss recounted a past initiative at Springer to use a single data 
+  lake across subsidiaries, which failed due to high effort and lack of value, as use cases like identifying job-seeking readers 
+  from news content proved impossible (00:29:09).\nData Aggregation and Use Cases for Multiple Brands: Peter Krauss highlighted 
+  that Palantir is being used to aggregate diverse data sources for different brands, stressing the need for an automated way to 
+  ingest and aggregate data based on specific brand needs, as a centralized data foundation does not work across all brands 
+  (00:31:16). Peter Krauss emphasized that the focus should be on identifying use cases that are consistent across all brands, such
+   as automating the news discovery process, which is a universal need (00:32:28). Peter Krauss mentioned the increasing ease and 
+  quality of generating videos and pictures using tools like Google Whisk, which needs to be reflected in news media strategies. 
+  Dmitry Shishkin expressed concern about unique content and the potential for increased internet flooding with senseless content, 
+  while acknowledging the value of multimodality for user experience, such as turning articles into podcasts 
+  (00:33:40).\nMonetization and Content Reutilization: Peter Krauss argued that content should not be limited to one brand, 
+  suggesting that it could be reused in different modalities, like YouTube videos, to generate revenue that supports investigative 
+  journalism. Dmitry Shishkin agreed that existing content could be repackaged for different platforms. Peter Krauss explained that
+   increased monetization is necessary to avoid decreasing quality or producing \"stupid things everyone else is doing\" 
+  (00:35:49). Peter Krauss envisioned a future where subscription-based investigative articles are complemented by automated video 
+  reels on platforms like YouTube, effectively turning content distribution into an AI-driven process.\n\nSuggested next 
+  steps\nPeter Krauss will share the changed wording of the user needs model with Dmitry Shishkin.\nPeter Krauss will stress the 
+  point about discovery at the editorial summit.\n\nYou should review Geminis notes to make sure theyre accurate. Get tips and 
+  learn how Gemini takes notes\nPlease provide feedback about using Gemini to take notes in a short survey."}'
