@@ -64,10 +64,13 @@ export async function POST(request: NextRequest) {
     // const isVercel = process.env.VERCEL === '1'
     const isVercel = true
 
-    let commitResult
-  
-      console.log('Running on Vercel - using GitHub API for commit...')
-      commitResult = await commitMarkdownToGitHub(markdown, title, summary, imageData || undefined)
+    console.log('Running on Vercel - using GitHub API for commit...')
+    const commitResult = await commitMarkdownToGitHub(
+      markdown,
+      title,
+      summary,
+      imageData || undefined
+    )
     // } else {
     //   console.log('Running locally - using git operations...')
     //   commitResult = await commitMarkdownToRepo(markdown, title, summary, imageData || undefined)
