@@ -146,6 +146,7 @@ async function createOrUpdateFile(
   let sha: string | undefined
 
   try {
+    console.log(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`)
     const getResponse = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
       {
