@@ -5,6 +5,7 @@ import {
   generateTitle,
 } from '@/lib/anthropic-client'
 import { commitMarkdownToRepo } from '@/lib/git-operations'
+import { commitMarkdownToGitHub } from '@/lib/github-operations'
 import { extractTitleFromMarkdown, generateSlug } from '@/lib/markdown-generator'
 
 interface RequestBody {
@@ -59,14 +60,18 @@ export async function POST(request: NextRequest) {
     console.log('Generating summary...')
     const summary = await generateShortSummary(body.transcript)
 
-    // Commit the markdown to the repository
-    console.log('Committing to repository...')
-    const commitResult = await commitMarkdownToRepo(
-      markdown,
-      title,
-      summary,
-      imageData || undefined
-    )
+    // Use GitHub API on Vercel, local git operations otherwise
+    const isVercel = process.env.VERCEL === '1'
+
+    let commitResult
+
+    if (isVercel) {
+      console.log('Running on Vercel - using GitHub API for commit...')
+      commitResult = await commitMarkdownToGitHub(markdown, title, summary, imageData || undefined)
+    } else {
+      console.log('Running locally - using git operations...')
+      commitResult = await commitMarkdownToRepo(markdown, title, summary, imageData || undefined)
+    }
 
     if (!commitResult.success) {
       return NextResponse.json(
