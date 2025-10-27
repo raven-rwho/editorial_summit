@@ -13,10 +13,7 @@ export async function POST(request: NextRequest) {
     const sitePassword = process.env.SITE_PASSWORD
 
     if (!sitePassword) {
-      return NextResponse.json(
-        { error: 'Site password not configured' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Site password not configured' }, { status: 500 })
     }
 
     // Check if provided password matches
@@ -33,16 +30,10 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({ success: true })
     } else {
-      return NextResponse.json(
-        { error: 'Invalid password' },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
     }
   } catch (error) {
     console.error('Login error:', error)
-    return NextResponse.json(
-      { error: 'An error occurred during login' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'An error occurred during login' }, { status: 500 })
   }
 }
