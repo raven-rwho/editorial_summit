@@ -128,7 +128,10 @@ ${transcript.substring(0, 1000)}...`
 export async function transformTranscriptToMarkdown(
   transcript: string,
   options?: { includeImage?: boolean; slug?: string }
-): Promise<{ markdown: string; imageData?: any }> {
+): Promise<{
+  markdown: string
+  imageData?: { url: string; alt: string; credit: string; localPath?: string }
+}> {
   const prompt = `Please transform the following meeting transcript into a well-structured written story in markdown format.
 
 Key requirements:

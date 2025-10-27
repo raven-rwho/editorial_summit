@@ -61,7 +61,12 @@ export async function POST(request: NextRequest) {
 
     // Commit the markdown to the repository
     console.log('Committing to repository...')
-    const commitResult = await commitMarkdownToRepo(markdown, title, summary, imageData || undefined)
+    const commitResult = await commitMarkdownToRepo(
+      markdown,
+      title,
+      summary,
+      imageData || undefined
+    )
 
     if (!commitResult.success) {
       return NextResponse.json(

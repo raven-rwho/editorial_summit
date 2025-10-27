@@ -49,7 +49,7 @@ export function generateFrontMatter(
   title: string,
   summary: string,
   imageData?: ImageData,
-  additionalFields?: Record<string, any>
+  additionalFields?: Record<string, unknown>
 ): string {
   const date = new Date().toISOString()
   const imageFields = imageData ? `images: ['${imageData.localPath || imageData.url}']` : ''
@@ -60,7 +60,14 @@ date: "${date}"
 tags: ["Summit", "transcript"]
 draft: false
 summary: "${summary}"
-${imageFields}${additionalFields ? '\n' + Object.entries(additionalFields).map(([key, value]) => `${key}: ${JSON.stringify(value)}`).join('\n') : ''}
+${imageFields}${
+    additionalFields
+      ? '\n' +
+        Object.entries(additionalFields)
+          .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+          .join('\n')
+      : ''
+  }
 ---
 
 `
@@ -76,7 +83,7 @@ export function generateCompleteMarkdown(
   title: string,
   summary: string,
   imageData?: ImageData,
-  additionalFields?: Record<string, any>
+  additionalFields?: Record<string, unknown>
 ): string {
   // Insert image into the markdown content if provided
   let content = markdown
