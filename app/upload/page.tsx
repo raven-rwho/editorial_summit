@@ -102,12 +102,15 @@ export default function AudioUploadPage() {
 
     try {
       if (mode === 'audio') {
+        console.log('[Upload] Starting audio upload...')
         setProgress('Uploading and transcribing audio...')
         const formData = new FormData()
         formData.append('audio', file!)
         if (title) {
           formData.append('title', title)
         }
+
+        console.log(`[Upload] File: ${file!.name}, Size: ${file!.size} bytes, Type: ${file!.type}`)
 
         const response = await fetch('/api/process-audio', {
           method: 'POST',
@@ -117,9 +120,12 @@ export default function AudioUploadPage() {
           body: formData,
         })
 
+        console.log(`[Upload] Response status: ${response.status}`)
+
         const data: UploadResponse = await response.json()
 
         if (response.ok && data.success) {
+          console.log('[Upload] Audio upload successful:', data.data?.title)
           setResult(data)
           setProgress('')
           setFile(null)
@@ -128,11 +134,15 @@ export default function AudioUploadPage() {
             fileInputRef.current.value = ''
           }
         } else {
-          setError(data.error || data.details || 'Upload failed')
+          const errorMsg = data.error || data.details || 'Upload failed'
+          console.error('[Upload] Audio upload failed:', errorMsg)
+          console.error('[Upload] Full error response:', data)
+          setError(errorMsg)
           setProgress('')
         }
       } else {
         // Text mode - process transcript directly
+        console.log('[Upload] Starting transcript processing...')
         setProgress('Processing transcript...')
         const response = await fetch('/api/process-transcript', {
           method: 'POST',
@@ -146,19 +156,29 @@ export default function AudioUploadPage() {
           }),
         })
 
+        console.log(`[Upload] Response status: ${response.status}`)
+
         const data: UploadResponse = await response.json()
 
         if (response.ok && data.success) {
+          console.log('[Upload] Transcript processing successful:', data.data?.title)
           setResult(data)
           setProgress('')
           setTranscript('')
           setTitle('')
         } else {
-          setError(data.error || data.details || 'Processing failed')
+          const errorMsg = data.error || data.details || 'Processing failed'
+          console.error('[Upload] Transcript processing failed:', errorMsg)
+          console.error('[Upload] Full error response:', data)
+          setError(errorMsg)
           setProgress('')
         }
       }
     } catch (err) {
+      console.error('[Upload] Unexpected error during upload:', err)
+      if (err instanceof Error) {
+        console.error('[Upload] Error stack:', err.stack)
+      }
       setError('An error occurred. Please try again.')
       setProgress('')
     } finally {
