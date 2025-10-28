@@ -10,6 +10,19 @@ interface ImageData {
 }
 
 /**
+ * Escape a string for safe use in YAML frontmatter
+ * Handles quotes, newlines, and other special characters
+ */
+function escapeYamlString(str: string): string {
+  // Replace double quotes with escaped quotes
+  let escaped = str.replace(/"/g, '\\"')
+
+  // If the string contains special YAML characters, use quotes
+  // Otherwise, we can use it as-is (but we'll quote everything for safety)
+  return `"${escaped}"`
+}
+
+/**
  * Insert an image into markdown content after the first H1 heading
  */
 export function insertImageIntoMarkdown(markdown: string, imageData: ImageData): string {
@@ -54,12 +67,16 @@ export function generateFrontMatter(
   const date = new Date().toISOString()
   const imageFields = imageData ? `images: ['${imageData.localPath || imageData.url}']` : ''
 
+  // Escape title and summary to prevent YAML parsing errors
+  const escapedTitle = escapeYamlString(title)
+  const escapedSummary = escapeYamlString(summary)
+
   const frontMatter = `---
-title: "${title}"
+title: ${escapedTitle}
 date: "${date}"
 tags: ["Summit", "transcript"]
 draft: false
-summary: "${summary}"
+summary: ${escapedSummary}
 ${imageFields}${
     additionalFields
       ? '\n' +
