@@ -9,7 +9,7 @@ interface UploadResponse {
     title: string
     filePath: string
     commitHash: string
-    transcriptLength: number
+    transcriptLength?: number
     previewContent: string
     image: {
       url: string
@@ -21,8 +21,12 @@ interface UploadResponse {
   details?: string
 }
 
+type UploadMode = 'audio' | 'text'
+
 export default function AudioUploadPage() {
+  const [mode, setMode] = useState<UploadMode>('audio')
   const [file, setFile] = useState<File | null>(null)
+  const [transcript, setTranscript] = useState('')
   const [title, setTitle] = useState('')
   const [password, setPassword] = useState('')
   const [uploading, setUploading] = useState(false)
@@ -78,51 +82,84 @@ export default function AudioUploadPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!file) {
-      setError('Please select an audio file')
-      return
-    }
-
     if (!password) {
       setError('Please enter the API password')
       return
     }
 
+    if (mode === 'audio' && !file) {
+      setError('Please select an audio file')
+      return
+    }
+
+    if (mode === 'text' && !transcript.trim()) {
+      setError('Please enter a transcript')
+      return
+    }
+
     setUploading(true)
     setError('')
-    setProgress('Uploading audio file...')
 
     try {
-      const formData = new FormData()
-      formData.append('audio', file)
-      if (title) {
-        formData.append('title', title)
-      }
+      if (mode === 'audio') {
+        setProgress('Uploading and transcribing audio...')
+        const formData = new FormData()
+        formData.append('audio', file!)
+        if (title) {
+          formData.append('title', title)
+        }
 
-      const response = await fetch('/api/process-audio', {
-        method: 'POST',
-        headers: {
-          'x-api-password': password,
-        },
-        body: formData,
-      })
+        const response = await fetch('/api/process-audio', {
+          method: 'POST',
+          headers: {
+            'x-api-password': password,
+          },
+          body: formData,
+        })
 
-      const data: UploadResponse = await response.json()
+        const data: UploadResponse = await response.json()
 
-      if (response.ok && data.success) {
-        setResult(data)
-        setProgress('')
-        setFile(null)
-        setTitle('')
-        if (fileInputRef.current) {
-          fileInputRef.current.value = ''
+        if (response.ok && data.success) {
+          setResult(data)
+          setProgress('')
+          setFile(null)
+          setTitle('')
+          if (fileInputRef.current) {
+            fileInputRef.current.value = ''
+          }
+        } else {
+          setError(data.error || data.details || 'Upload failed')
+          setProgress('')
         }
       } else {
-        setError(data.error || data.details || 'Upload failed')
-        setProgress('')
+        // Text mode - process transcript directly
+        setProgress('Processing transcript...')
+        const response = await fetch('/api/process-transcript', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-password': password,
+          },
+          body: JSON.stringify({
+            transcript: transcript.trim(),
+            title: title || undefined,
+          }),
+        })
+
+        const data: UploadResponse = await response.json()
+
+        if (response.ok && data.success) {
+          setResult(data)
+          setProgress('')
+          setTranscript('')
+          setTitle('')
+        } else {
+          setError(data.error || data.details || 'Processing failed')
+          setProgress('')
+        }
       }
     } catch (err) {
-      setError('An error occurred while uploading. Please try again.')
+      setError('An error occurred. Please try again.')
       setProgress('')
     } finally {
       setUploading(false)
@@ -134,113 +171,179 @@ export default function AudioUploadPage() {
       <div className="mx-auto max-w-3xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-            Upload Audio Recording
+            Publish Content
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Upload an audio file to automatically transcribe, generate an article, and publish to
-            the site
+            Upload an audio file or paste a transcript to generate and publish an article
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* File Upload Area */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Audio File
-            </label>
-            <div
-              className={`mt-2 flex justify-center rounded-lg border-2 border-dashed px-6 py-10 ${
-                isDragging
-                  ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
-                  : 'border-gray-300 dark:border-gray-700'
-              } ${file ? 'bg-green-50 dark:bg-green-900/20' : ''}`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
+        {/* Mode Tabs */}
+        <div className="mb-6 border-b border-gray-200 dark:border-gray-700">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              type="button"
+              onClick={() => {
+                setMode('audio')
+                setError('')
+                setResult(null)
+              }}
+              className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                mode === 'audio'
+                  ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+              }`}
             >
-              <div className="text-center">
-                {file ? (
-                  <div className="space-y-2">
-                    <svg
-                      className="mx-auto h-12 w-12 text-green-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {(file.size / (1024 * 1024)).toFixed(2)} MB
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFile(null)
-                        if (fileInputRef.current) {
-                          fileInputRef.current.value = ''
-                        }
-                      }}
-                      className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400"
-                    >
-                      Change file
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-400"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <div className="flex text-sm text-gray-600 dark:text-gray-400">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
+              Audio Upload
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode('text')
+                setError('')
+                setResult(null)
+              }}
+              className={`whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium ${
+                mode === 'text'
+                  ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                  : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+              }`}
+            >
+              Text Input
+            </button>
+          </nav>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* File Upload Area - Only show in audio mode */}
+          {mode === 'audio' && (
+            <div>
+              <label
+                htmlFor="file-upload"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Audio File
+              </label>
+              <div
+                className={`mt-2 flex justify-center rounded-lg border-2 border-dashed px-6 py-10 ${
+                  isDragging
+                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20'
+                    : 'border-gray-300 dark:border-gray-700'
+                } ${file ? 'bg-green-50 dark:bg-green-900/20' : ''}`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <div className="text-center">
+                  {file ? (
+                    <div className="space-y-2">
+                      <svg
+                        className="mx-auto h-12 w-12 text-green-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
                       >
-                        <span>Upload a file</span>
-                        <input
-                          ref={fileInputRef}
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          accept=".mp3,.wav,.webm,.ogg,.flac,.m4a,.mp4,audio/*"
-                          className="sr-only"
-                          onChange={(e) => {
-                            const selectedFile = e.target.files?.[0]
-                            if (selectedFile) {
-                              handleFileChange(selectedFile)
-                            }
-                          }}
-                          disabled={uploading}
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
+                      </svg>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {file.name}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {(file.size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFile(null)
+                          if (fileInputRef.current) {
+                            fileInputRef.current.value = ''
+                          }
+                        }}
+                        className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400"
+                      >
+                        Change file
+                      </button>
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {supportedFormats.map((f) => f.toUpperCase()).join(', ')} up to{' '}
-                      {maxFileSizeMB}MB
-                    </p>
-                  </div>
-                )}
+                  ) : (
+                    <div className="space-y-2">
+                      <svg
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <div className="flex text-sm text-gray-600 dark:text-gray-400">
+                        <label
+                          htmlFor="file-upload"
+                          className="relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
+                        >
+                          <span>Upload a file</span>
+                          <input
+                            ref={fileInputRef}
+                            id="file-upload"
+                            name="file-upload"
+                            type="file"
+                            accept=".mp3,.wav,.webm,.ogg,.flac,.m4a,.mp4,audio/*"
+                            className="sr-only"
+                            onChange={(e) => {
+                              const selectedFile = e.target.files?.[0]
+                              if (selectedFile) {
+                                handleFileChange(selectedFile)
+                              }
+                            }}
+                            disabled={uploading}
+                          />
+                        </label>
+                        <p className="pl-1">or drag and drop</p>
+                      </div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {supportedFormats.map((f) => f.toUpperCase()).join(', ')} up to{' '}
+                        {maxFileSizeMB}MB
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {/* Text Input Area - Only show in text mode */}
+          {mode === 'text' && (
+            <div>
+              <label
+                htmlFor="transcript"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                Transcript
+              </label>
+              <textarea
+                id="transcript"
+                name="transcript"
+                rows={12}
+                className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 sm:text-sm"
+                placeholder="Paste your transcript here..."
+                value={transcript}
+                onChange={(e) => setTranscript(e.target.value)}
+                disabled={uploading}
+              />
+              <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                Paste the transcript text directly. The system will generate an article and publish
+                it.
+              </p>
+            </div>
+          )}
 
           {/* Title Input */}
           <div>
@@ -365,10 +468,15 @@ export default function AudioUploadPage() {
           <div>
             <button
               type="submit"
-              disabled={uploading || !file || !password}
+              disabled={
+                uploading ||
+                !password ||
+                (mode === 'audio' && !file) ||
+                (mode === 'text' && !transcript.trim())
+              }
               className="flex w-full justify-center rounded-md border border-transparent bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {uploading ? 'Processing...' : 'Upload and Publish'}
+              {uploading ? 'Processing...' : 'Publish Article'}
             </button>
           </div>
         </form>
@@ -379,24 +487,26 @@ export default function AudioUploadPage() {
             What happens next?
           </h3>
           <ol className="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            {mode === 'audio' && (
+              <li className="flex items-start">
+                <span className="mr-2">1.</span>
+                <span>Audio is transcribed using OpenAI Whisper</span>
+              </li>
+            )}
             <li className="flex items-start">
-              <span className="mr-2">1.</span>
-              <span>Audio is transcribed using OpenAI Whisper</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2">2.</span>
+              <span className="mr-2">{mode === 'audio' ? '2' : '1'}.</span>
               <span>AI generates a title, article, and summary from the transcript</span>
             </li>
             <li className="flex items-start">
-              <span className="mr-2">3.</span>
+              <span className="mr-2">{mode === 'audio' ? '3' : '2'}.</span>
               <span>A relevant image is fetched from stock photo services</span>
             </li>
             <li className="flex items-start">
-              <span className="mr-2">4.</span>
+              <span className="mr-2">{mode === 'audio' ? '4' : '3'}.</span>
               <span>Article is committed and pushed to GitHub</span>
             </li>
             <li className="flex items-start">
-              <span className="mr-2">5.</span>
+              <span className="mr-2">{mode === 'audio' ? '5' : '4'}.</span>
               <span>Site is automatically rebuilt and published</span>
             </li>
           </ol>
