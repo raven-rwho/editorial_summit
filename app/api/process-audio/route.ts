@@ -64,9 +64,7 @@ export async function POST(request: NextRequest) {
       'audio/aac',
     ]
 
-    console.log(
-      `[AUDIO] Received file: ${audioFile.name}, type: ${audioFile.type}, size: ${audioFile.size} bytes`
-    )
+    console.log(`[AUDIO] Received: ${audioFile.name} (${audioFile.type}, ${audioFile.size} bytes)`)
 
     // Check if file type starts with 'audio/' or matches allowed types
     const isAudioFile = audioFile.type.startsWith('audio/') || allowedTypes.includes(audioFile.type)
