@@ -81,13 +81,42 @@ export async function POST(request: NextRequest) {
     }
 
     // Convert audio file to buffer
-    const audioBuffer = await audioFile.arrayBuffer()
-    const audioBase64 = Buffer.from(audioBuffer).toString('base64')
+    let audioBuffer: ArrayBuffer
+    let audioBase64: string
+    try {
+      audioBuffer = await audioFile.arrayBuffer()
+      audioBase64 = Buffer.from(audioBuffer).toString('base64')
+      console.log('[AUDIO] Audio file converted to base64 successfully')
+    } catch (error) {
+      console.error('[AUDIO] Error converting audio file:', error)
+      return NextResponse.json(
+        {
+          error: 'Failed to process audio file',
+          details: error instanceof Error ? error.message : 'Unable to read audio file',
+        },
+        { status: 500 }
+      )
+    }
 
     // Transcribe audio using OpenAI Whisper
     console.log('[AUDIO] Transcribing audio with OpenAI Whisper...')
-    const transcript = await transcribeAudio(audioBase64, audioFile.type, audioFile.name)
-    console.log(`[AUDIO] Transcription completed (${transcript.length} characters)`)
+    let transcript: string
+    try {
+      transcript = await transcribeAudio(audioBase64, audioFile.type, audioFile.name)
+      console.log(`[AUDIO] Transcription completed (${transcript.length} characters)`)
+    } catch (error) {
+      console.error('[AUDIO] Transcription failed:', error)
+      return NextResponse.json(
+        {
+          error: 'Audio transcription failed',
+          details:
+            error instanceof Error
+              ? error.message
+              : 'Failed to transcribe audio with OpenAI Whisper',
+        },
+        { status: 500 }
+      )
+    }
 
     // Generate title if not provided
     console.log('[AUDIO] Generating title...')
