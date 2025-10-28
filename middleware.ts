@@ -18,6 +18,10 @@ export function middleware(request: NextRequest) {
       // Check for login page (no language prefix since we skip language routing for /login)
       const isLoginPage = nextUrl.pathname === '/login'
       const isAuthApi = nextUrl.pathname.startsWith('/api/auth')
+      // API endpoints with their own authentication (header-based)
+      const isApiWithOwnAuth =
+        nextUrl.pathname.startsWith('/api/process-audio') ||
+        nextUrl.pathname.startsWith('/api/process-transcript')
       const isPublicFile = PUBLIC_FILE.test(nextUrl.pathname)
       const isNextInternal = nextUrl.pathname.startsWith('/_next')
 
@@ -25,8 +29,15 @@ export function middleware(request: NextRequest) {
       const authCookie = request.cookies.get('site-auth')
       const isAuthenticated = authCookie?.value === 'authenticated'
 
-      // Allow access to login page, auth API, and public files
-      if (!isAuthenticated && !isLoginPage && !isAuthApi && !isPublicFile && !isNextInternal) {
+      // Allow access to login page, auth API, API endpoints with own auth, and public files
+      if (
+        !isAuthenticated &&
+        !isLoginPage &&
+        !isAuthApi &&
+        !isApiWithOwnAuth &&
+        !isPublicFile &&
+        !isNextInternal
+      ) {
         // Redirect to login page
         const loginUrl = new URL('/login', request.url)
         return NextResponse.redirect(loginUrl)

@@ -3943,6 +3943,7 @@ __metadata:
     next-i18next: ^14.0.3
     next-intl: ^2.21.0
     next-themes: ^0.2.1
+    openai: ^6.7.0
     pliny: 0.1.6
     postcss: ^8.4.24
     prettier: ^3.0.0
@@ -9787,6 +9788,23 @@ __metadata:
   version: 1.113.0
   resolution: "oo-ascii-tree@npm:1.113.0"
   checksum: 3a9b0d61d22bcf9803fa4a10a345f30f5465f7115d795791c25da3ae417b3b2c8963974d745cc69f1821e9da5645fec2d694b634753a45fbe0f1aa0a473173e3
+  languageName: node
+  linkType: hard
+
+"openai@npm:^6.7.0":
+  version: 6.7.0
+  resolution: "openai@npm:6.7.0"
+  peerDependencies:
+    ws: ^8.18.0
+    zod: ^3.25 || ^4.0
+  peerDependenciesMeta:
+    ws:
+      optional: true
+    zod:
+      optional: true
+  bin:
+    openai: bin/cli
+  checksum: b481567e0f4783da069d60aa1ad03f832f31f87babd0f486b4317f2e2fd543b3b5b6b031e06da6ee5227f1fdd9a880c86836570f1902b90f2c20d547bc3b547a
   languageName: node
   linkType: hard
 

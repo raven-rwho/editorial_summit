@@ -1,9 +1,99 @@
 import Anthropic from '@anthropic-ai/sdk'
+import OpenAI from 'openai'
 import { fetchImageForContent } from './image-fetcher'
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
+
+/**
+ * Transcribe audio using OpenAI Whisper API
+ * Supports various audio formats
+ */
+export async function transcribeAudio(
+  audioBase64: string,
+  mimeType: string,
+  filename?: string
+): Promise<string> {
+  console.log('=== AUDIO TRANSCRIPTION START ===')
+  console.log(`Audio format: ${mimeType}`)
+  console.log(`Filename: ${filename}`)
+  console.log(`Audio size: ${audioBase64.length} bytes (base64)`)
+
+  try {
+    // Convert base64 to buffer
+    const audioBuffer = Buffer.from(audioBase64, 'base64')
+
+    // Determine file extension from filename or MIME type
+    let extension = 'mp3'
+    let correctedMimeType = mimeType
+
+    if (filename) {
+      // Extract extension from filename
+      const match = filename.match(/\.([^.]+)$/i)
+      if (match) {
+        extension = match[1].toLowerCase()
+      }
+    } else {
+      // Map MIME type to file extension
+      const extensionMap: Record<string, string> = {
+        'audio/mpeg': 'mp3',
+        'audio/mp3': 'mp3',
+        'audio/wav': 'wav',
+        'audio/webm': 'webm',
+        'audio/ogg': 'ogg',
+        'audio/flac': 'flac',
+        'audio/m4a': 'm4a',
+        'audio/mp4': 'mp4',
+        'audio/x-m4a': 'm4a',
+        'audio/aac': 'aac',
+      }
+      extension = extensionMap[mimeType] || 'mp3'
+    }
+
+    // Map extension to proper MIME type
+    const mimeTypeMap: Record<string, string> = {
+      mp3: 'audio/mpeg',
+      wav: 'audio/wav',
+      webm: 'audio/webm',
+      ogg: 'audio/ogg',
+      flac: 'audio/flac',
+      m4a: 'audio/mp4',
+      mp4: 'audio/mp4',
+      aac: 'audio/aac',
+      mpga: 'audio/mpeg',
+      oga: 'audio/ogg',
+    }
+
+    correctedMimeType = mimeTypeMap[extension] || 'audio/mpeg'
+
+    console.log(`Detected extension: ${extension}`)
+    console.log(`Using MIME type: ${correctedMimeType}`)
+
+    // Create a File-like object for the OpenAI API
+    const audioFile = new File([audioBuffer], `audio.${extension}`, { type: correctedMimeType })
+
+    console.log('Sending audio to OpenAI Whisper API...')
+    const response = await openai.audio.transcriptions.create({
+      file: audioFile,
+      model: 'whisper-1',
+      response_format: 'text',
+    })
+
+    const transcript = response.trim()
+    console.log(`=== TRANSCRIPTION COMPLETED ===`)
+    console.log(`Transcript length: ${transcript.length} characters`)
+    console.log('=== END TRANSCRIPTION ===\n')
+    return transcript
+  } catch (error) {
+    console.error('Error transcribing audio:', error)
+    throw new Error('Failed to transcribe audio using OpenAI Whisper API')
+  }
+}
 
 /**
  * Generate a short title for the article based on the transcript
