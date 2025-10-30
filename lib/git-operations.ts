@@ -79,6 +79,22 @@ Co-Authored-By: Claude <noreply@anthropic.com>`
     console.log(`  git commit -m "${commitMessage.split('\n')[0]}..."`)
     const commitResult = await git.commit(commitMessage)
     console.log(`[GIT] ✓ Commit created: ${commitResult.commit}`)
+
+    // Push to remote repository
+    try {
+      console.log(`[GIT] Pushing to remote repository...`)
+      const branchSummary = await git.branch()
+      const currentBranch = branchSummary.current
+      console.log(`  git push origin ${currentBranch}`)
+
+      await git.push('origin', currentBranch)
+      console.log(`[GIT] ✓ Successfully pushed to origin/${currentBranch}`)
+    } catch (pushError) {
+      console.error(`[GIT] ⚠️  Warning: Failed to push to remote:`, pushError)
+      console.error(`[GIT] Changes are committed locally but not pushed.`)
+      // Don't fail the whole operation if push fails - the commit is still valuable
+    }
+
     console.log('=== GIT OPERATIONS COMPLETE ===\n')
 
     return {
